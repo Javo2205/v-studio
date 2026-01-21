@@ -3,7 +3,7 @@ import nodemailer from 'nodemailer';
 
 // Nota: Vercel inyecta las variables de entorno automáticamente si están configuradas en el panel.
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req: VercelRequest, res: VercelResponse): Promise<void> {
     // CORS Handling (Opcional, pero bueno tenerlo)
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -21,7 +21,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // Solo permitir POST
     if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Method Not Allowed' });
+        res.status(405).json({ error: 'Method Not Allowed' });
+        return;
     }
 
     try {
@@ -29,7 +30,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         // Validate Input
         if (!name || !email) {
-            return res.status(400).json({ error: 'Missing required fields: name or email' });
+            res.status(400).json({ error: 'Missing required fields: name or email' });
+            return;
         }
 
         const smtpUser = process.env['SMTP_USER'];
@@ -39,10 +41,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             // In Serverless/Production, we cannot run Ethereal reliably due to timeouts/restrictions.
             // We must have ENV variables set.
             console.error('Missing SMTP_USER or SMTP_PASS environment variables in Vercel.');
-            return res.status(500).json({
+            res.status(500).json({
                 success: false,
                 error: 'Server Misconfiguration: SMTP Credentials not set in Vercel Environment.'
             });
+            return;
         }
 
         const transporter = nodemailer.createTransport({
@@ -57,10 +60,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             await transporter.verify();
         } catch (verifyError: any) {
             console.error('SMTP Connection Failed:', verifyError);
-            return res.status(500).json({
+            res.status(500).json({
                 success: false,
                 error: `SMTP Connection Failed: ${verifyError.message}`
             });
+            return;
         }
 
         const info = await transporter.sendMail({
@@ -87,6 +91,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             success: true,
             message: 'Email sent via Gmail'
         });
+        return;
 
     } catch (error: any) {
         console.error('Detailed Error sending email:', error);
@@ -95,5 +100,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             success: false,
             error: `Failed to send email: ${error.message || error}`
         });
+        return;
     }
 }

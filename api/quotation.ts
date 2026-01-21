@@ -64,16 +64,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
             },
         });
 
-        try {
-            await transporter.verify();
-        } catch (verifyError: any) {
-            console.error('SMTP Connection Failed:', verifyError);
-            res.status(500).json({
-                success: false,
-                error: `SMTP Connection Failed: ${verifyError.message}`
-            });
-            return;
-        }
+        // Optimización: Saltamos verify() para evitar timeouts en Serverless
+        // await transporter.verify();
 
         const info = await transporter.sendMail({
             from: '"Velocify System" <system@velocifystudio.com>',

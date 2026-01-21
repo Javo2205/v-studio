@@ -34,12 +34,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
             return;
         }
 
-        const smtpUser = process.env['SMTP_USER'];
-        const smtpPass = process.env['SMTP_PASS'];
+        // Depuración de variables de entorno (sin mostrar secretos completos)
+        const smtpUser = process.env.SMTP_USER;
+        const smtpPass = process.env.SMTP_PASS;
+
+        console.log('Environment Debug:', {
+            hasUser: !!smtpUser,
+            userLength: smtpUser?.length,
+            hasPass: !!smtpPass,
+            passLength: smtpPass?.length
+        });
 
         if (!smtpUser || !smtpPass) {
-            // In Serverless/Production, we cannot run Ethereal reliably due to timeouts/restrictions.
-            // We must have ENV variables set.
             console.error('Missing SMTP_USER or SMTP_PASS environment variables in Vercel.');
             res.status(500).json({
                 success: false,
@@ -49,7 +55,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
         }
 
         const transporter = nodemailer.createTransport({
-            service: 'gmail',
+            host: 'smtp.gmail.com',
+            port: 465,
+            secure: true,
             auth: {
                 user: smtpUser,
                 pass: smtpPass,

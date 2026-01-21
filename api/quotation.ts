@@ -1,10 +1,9 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
-import nodemailer from 'nodemailer';
+const nodemailer = require('nodemailer');
 
 // Nota: Vercel inyecta las variables de entorno automáticamente si están configuradas en el panel.
 
-export default async function handler(req: VercelRequest, res: VercelResponse): Promise<void> {
-    // CORS Handling (Opcional, pero bueno tenerlo)
+module.exports = async (req: any, res: any) => {
+    // CORS Handling
     res.setHeader('Access-Control-Allow-Credentials', 'true');
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
@@ -34,15 +33,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
             return;
         }
 
-        // Depuración de variables de entorno (sin mostrar secretos completos)
-        const smtpUser = process.env.SMTP_USER;
-        const smtpPass = process.env.SMTP_PASS;
+        // Depuración de variables de entorno con notación de corchetes segura para CommonJS/Node
+        const smtpUser = process.env['SMTP_USER'];
+        const smtpPass = process.env['SMTP_PASS'];
 
         console.log('Environment Debug:', {
             hasUser: !!smtpUser,
-            userLength: smtpUser?.length,
+            userLength: smtpUser ? smtpUser.length : 0,
             hasPass: !!smtpPass,
-            passLength: smtpPass?.length
+            passLength: smtpPass ? smtpPass.length : 0
         });
 
         if (!smtpUser || !smtpPass) {
@@ -93,13 +92,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
         });
         return;
 
-    } catch (error: any) {
+    } catch (error) {
         console.error('Detailed Error sending email:', error);
         // Return the actual error message to help debugging
+        const errorMessage = error instanceof Error ? error.message : String(error);
         res.status(500).json({
             success: false,
-            error: `Failed to send email: ${error.message || error}`
+            error: `Failed to send email: ${errorMessage}`
         });
         return;
     }
-}
+};

@@ -1,12 +1,23 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component } from '@angular/core';
+import { HeaderComponent } from './components/header/header.component';
+import { HeroComponent } from './components/hero/hero.component';
+import { TrustBarComponent } from './components/trust-bar/trust-bar.component';
+import { FeaturesGridComponent } from './components/features-grid/features-grid.component';
+import { FooterComponent } from './components/footer/footer.component';
+import { QuotationModalComponent } from './components/quotation-modal/quotation-modal.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  standalone: true,
+  imports: [
+    HeaderComponent,
+    HeroComponent,
+    TrustBarComponent,
+    FeaturesGridComponent,
+    FooterComponent,
+    QuotationModalComponent
+  ],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App {
-  protected readonly title = signal('v-studio-app');
-}
+export class App { }

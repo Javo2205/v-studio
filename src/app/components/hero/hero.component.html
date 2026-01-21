@@ -1,0 +1,108 @@
+<section class="relative pt-32 pb-20 overflow-hidden bg-white">
+  <!-- ANCHOR: ENTRY_ANIMATION_CONTAINER -->
+  <!-- Ambient Background Glow -->
+  <div
+    class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gradient-to-b from-blue-50/50 to-transparent pointer-events-none -z-10"
+  ></div>
+  <div
+    class="absolute top-20 right-0 w-[500px] h-[500px] bg-blue-100/30 rounded-full blur-3xl pointer-events-none -z-10"
+  ></div>
+
+  <div class="container mx-auto px-6 text-center max-w-5xl animate-fade-in-up">
+    <div
+      class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-xs font-semibold uppercase tracking-wider mb-8"
+    >
+      <span class="relative flex h-2 w-2">
+        <span
+          class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"
+        ></span>
+        <span class="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+      </span>
+      Nuevo Motor v4.2 Disponible
+    </div>
+
+    <h1
+      class="text-5xl md:text-7xl lg:text-8xl font-black tracking-tight text-zinc-900 mb-8 leading-tight"
+    >
+      Fotografía de producto <br class="hidden md:block" />
+      <span
+        class="bg-gradient-to-r from-blue-600 via-zinc-800 to-zinc-900 bg-clip-text text-transparent"
+        >premium, lista mañana.</span
+      >
+    </h1>
+
+    <p
+      class="text-lg md:text-xl text-zinc-500 mb-10 max-w-2xl mx-auto leading-relaxed z-10 relative"
+    >
+      Transformamos tus productos con IA de vanguardia para resultados profesionales en tiempo
+      récord. Sin complicaciones, sin esperas infinitas.
+    </p>
+
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20">
+      <!-- Botón WhatsApp -->
+      <a
+        href="https://wa.me/8117216831?text=Hola,%20me%20interesa%20Velocify%20Studio"
+        target="_blank"
+        class="w-full sm:w-auto px-8 py-4 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-500/30 hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-center gap-2 group"
+      >
+        <span>Empezar ahora por WhatsApp</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="2"
+          stroke="currentColor"
+          class="w-5 h-5 group-hover:translate-x-1 transition-transform"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3"
+          />
+        </svg>
+      </a>
+
+      <!-- Botón Cotizar -->
+      <button
+        (click)="openQuotation()"
+        class="w-full sm:w-auto px-8 py-4 bg-white text-zinc-900 font-semibold rounded-full border border-zinc-200 hover:bg-zinc-50 hover:border-zinc-300 transition-all flex items-center justify-center shadow-sm hover:shadow-md"
+      >
+        Solicitar Cotización
+      </button>
+    </div>
+
+    <!-- Imagen Visual Potente (Glassmorphism & Glow) -->
+    <div
+      class="relative mx-auto rounded-3xl p-2 bg-gradient-to-b from-zinc-100 to-transparent shadow-2xl shadow-blue-900/10"
+    >
+      <div
+        class="relative rounded-2xl overflow-hidden bg-zinc-900 aspect-video flex items-center justify-center group ring-1 ring-black/5"
+      >
+        <div
+          class="absolute inset-0 bg-gradient-to-tr from-blue-900/30 to-zinc-900/50 mix-blend-overlay z-10"
+        ></div>
+        <!-- Placeholder de imagen -->
+        <img
+          src="https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?q=80&w=2574&auto=format&fit=crop"
+          alt="Hero Product Example"
+          class="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-1000 ease-out"
+        />
+
+        <!-- Floating Badge -->
+        <div
+          class="absolute bottom-8 left-8 z-20 glass-dark px-5 py-3 rounded-2xl flex items-center gap-3 shadow-lg transform transition-transform group-hover:translate-x-2"
+        >
+          <div
+            class="w-2 h-2 rounded-full bg-green-400 shadow-[0_0_10px_rgba(74,222,128,0.5)]"
+          ></div>
+          <div>
+            <p class="text-[10px] text-zinc-400 font-medium uppercase tracking-wider">
+              Procesado con
+            </p>
+            <p class="text-xs text-white font-bold tracking-wide">Velocify Neural™ v4.2</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

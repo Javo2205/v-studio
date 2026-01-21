@@ -26,38 +26,47 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     try {
         const { name, email, projectType } = req.body;
-        let transporter;
+
+        // Validate Input
+        if (!name || !email) {
+            return res.status(400).json({ error: 'Missing required fields: name or email' });
+        }
 
         const smtpUser = process.env['SMTP_USER'];
         const smtpPass = process.env['SMTP_PASS'];
 
-        if (smtpUser && smtpPass) {
-            // Modo Real (Gmail/SMTP)
-            transporter = nodemailer.createTransport({
-                service: 'gmail',
-                auth: {
-                    user: smtpUser,
-                    pass: smtpPass,
-                },
+        if (!smtpUser || !smtpPass) {
+            // In Serverless/Production, we cannot run Ethereal reliably due to timeouts/restrictions.
+            // We must have ENV variables set.
+            console.error('Missing SMTP_USER or SMTP_PASS environment variables in Vercel.');
+            return res.status(500).json({
+                success: false,
+                error: 'Server Misconfiguration: SMTP Credentials not set in Vercel Environment.'
             });
-        } else {
-            // Modo Prueba (Ethereal)
-            const testAccount = await nodemailer.createTestAccount();
-            transporter = nodemailer.createTransport({
-                host: testAccount.smtp.host,
-                port: testAccount.smtp.port,
-                secure: testAccount.smtp.secure,
-                auth: {
-                    user: testAccount.user,
-                    pass: testAccount.pass,
-                },
+        }
+
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: smtpUser,
+                pass: smtpPass,
+            },
+        });
+
+        try {
+            await transporter.verify();
+        } catch (verifyError: any) {
+            console.error('SMTP Connection Failed:', verifyError);
+            return res.status(500).json({
+                success: false,
+                error: `SMTP Connection Failed: ${verifyError.message}`
             });
         }
 
         const info = await transporter.sendMail({
-            from: '"Velocify Studio System" <system@velocifystudio.com>',
+            from: '"Velocify System" <system@velocifystudio.com>',
             to: "javo.delara@gmail.com",
-            subject: `Nueva Solicitud de Cotización: ${name}`,
+            subject: `Nueva Solicitud: ${name}`,
             text: `Nueva solicitud: ${name} (${email}) - Proyecto: ${projectType}`,
             html: `
         <div style="font-family: sans-serif; padding: 20px; color: #333;">
@@ -76,12 +85,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         res.status(200).json({
             success: true,
-            message: smtpUser ? 'Email sent via Gmail' : 'Email sent via Ethereal',
-            previewUrl: smtpUser ? null : nodemailer.getTestMessageUrl(info)
+            message: 'Email sent via Gmail'
         });
 
-    } catch (error) {
-        console.error('Error sending email:', error);
-        res.status(500).json({ success: false, error: 'Failed to send email' });
+    } catch (error: any) {
+        console.error('Detailed Error sending email:', error);
+        // Return the actual error message to help debugging
+        res.status(500).json({
+            success: false,
+            error: `Failed to send email: ${error.message || error}`
+        });
     }
 }
